@@ -1,7 +1,9 @@
 package com.dbs.controller;
 
 import com.dbs.models.request.TransactionRequest;
+import com.dbs.models.response.TransactionResponse;
 import jakarta.validation.Valid;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
@@ -17,7 +20,10 @@ public class TransactionController {
 
     @PostMapping("/transactions")
     public ResponseEntity<?> processTransaction(@Valid @RequestBody TransactionRequest transactionRequest) {
-        return ResponseEntity.ok(transactionRequest);
+        TransactionResponse transactionResponse = new TransactionResponse();
+        BeanUtils.copyProperties(transactionRequest,transactionResponse);
+        transactionResponse.setTransactionId(UUID.randomUUID().toString());
+        return ResponseEntity.ok(transactionResponse);
     }
 
     @GetMapping("/health")
